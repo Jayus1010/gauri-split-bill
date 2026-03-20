@@ -2,148 +2,232 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Gauri Split Bill - AI Scanner</title>
-    <!-- CSS & JS Libraries -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Gauri Split Bill — Premium AI</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --bg: #f8fafc;
+        }
         body { 
             font-family: 'Plus Jakarta Sans', sans-serif; 
-            -webkit-tap-highlight-color: transparent; 
+            background-color: var(--bg);
+            -webkit-tap-highlight-color: transparent;
+            color: #1e293b;
         }
-        .animate-up { animation: slideUp 0.4s ease-out; }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        /* Hilangkan spinner pada input angka */
-        input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+        .glass {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+        .card-shadow {
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.04), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
+        }
+        .step-transition {
+            animation: slideIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        input:focus { outline: none; }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+            box-shadow: 0 10px 20px -5px rgba(79, 70, 229, 0.4);
+        }
+        .btn-primary:active { transform: scale(0.96); }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-900 min-h-screen">
+<body class="selection:bg-indigo-100">
 
-    <!-- NAVBAR -->
-    <nav class="bg-white/90 backdrop-blur-md border-b sticky top-0 z-40 px-5 py-4 flex items-center justify-between shadow-sm">
+    <!-- Header Transparan Modern -->
+    <header class="glass sticky top-0 z-50 border-b border-white/20 px-6 py-4 flex items-center justify-between">
         <div class="flex items-center gap-3">
-            <div class="w-10 h-10 bg-indigo-600 rounded-2xl flex items-center justify-center text-white shadow-lg">
+            <div class="w-10 h-10 btn-primary rounded-2xl flex items-center justify-center text-white shadow-lg">
                 <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1-2-1Z"/><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"/><path d="M12 17.5v-11"/></svg>
             </div>
             <div>
-                <h1 class="font-extrabold text-lg leading-tight tracking-tight">Gauri</h1>
-                <p class="text-[10px] text-indigo-500 font-extrabold uppercase tracking-widest">Split Bill AI</p>
+                <h1 class="font-extrabold text-xl tracking-tight text-slate-900">Gauri</h1>
+                <p class="text-[9px] font-black text-indigo-500 uppercase tracking-[0.2em] leading-none mt-0.5">Premium Split Bill</p>
             </div>
         </div>
-        <button onclick="location.reload()" class="p-2 text-slate-400">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+        <button onclick="location.reload()" class="w-10 h-10 rounded-full flex items-center justify-center text-slate-400 hover:bg-slate-100 transition-all">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
         </button>
-    </nav>
+    </header>
 
-    <main class="max-w-md mx-auto p-5 pb-24">
+    <main class="max-w-md mx-auto p-6 pb-32">
         
-        <!-- STEP 1: UPLOAD -->
-        <div id="step-1" class="animate-up space-y-6">
-            <div class="bg-indigo-600 rounded-[2.5rem] p-8 text-white shadow-2xl relative overflow-hidden">
-                <div class="relative z-10">
-                    <h2 class="text-2xl font-extrabold leading-tight">Halo! Siap bagi tagihan?</h2>
-                    <p class="text-indigo-100 text-sm mt-2">Foto struknya, Gauri hitung otomatis.</p>
-                </div>
-                <div class="absolute -right-10 -bottom-10 w-40 h-40 bg-white/10 rounded-full blur-3xl"></div>
+        <!-- STEP 1: HOME & UPLOAD -->
+        <div id="step-1" class="step-transition space-y-8">
+            <div class="space-y-2 py-4">
+                <h2 class="text-3xl font-extrabold text-slate-900 leading-tight">Makan bareng <br><span class="text-indigo-600">jadi lebih mudah.</span></h2>
+                <p class="text-slate-500 text-sm font-medium">Biar Gauri yang urus hitungan rumitnya.</p>
             </div>
 
-            <div class="grid grid-cols-1 gap-4">
-                <label class="bg-white p-6 rounded-[2rem] border-2 border-slate-100 shadow-sm flex flex-col items-center text-center space-y-3 active:scale-95 transition-all cursor-pointer">
+            <div class="grid gap-4">
+                <label class="group relative bg-white p-8 rounded-[2.5rem] border border-slate-100 card-shadow flex flex-col items-center text-center space-y-4 active:scale-95 transition-all cursor-pointer">
                     <input type="file" accept="image/*" capture="environment" class="hidden" onchange="prosesGambar(this)">
-                    <div class="w-16 h-16 bg-indigo-50 text-indigo-600 rounded-full flex items-center justify-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg>
+                    <div class="w-20 h-20 bg-indigo-50 text-indigo-600 rounded-3xl flex items-center justify-center group-hover:btn-primary group-hover:text-white transition-all duration-300">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg>
                     </div>
-                    <span class="font-bold text-slate-700">Ambil Foto Kamera</span>
+                    <div>
+                        <span class="block font-bold text-lg text-slate-800">Foto Struk</span>
+                        <span class="text-xs text-slate-400 font-medium">Scan struk dengan AI Gauri</span>
+                    </div>
                 </label>
 
-                <label class="bg-white p-6 rounded-[2rem] border-2 border-slate-100 shadow-sm flex flex-col items-center text-center space-y-3 active:scale-95 transition-all cursor-pointer">
-                    <input type="file" accept="image/*" class="hidden" onchange="prosesGambar(this)">
-                    <div class="w-16 h-16 bg-emerald-50 text-emerald-600 rounded-full flex items-center justify-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
-                    </div>
-                    <span class="font-bold text-slate-700">Pilih dari Galeri</span>
-                </label>
+                <div class="flex gap-4">
+                    <label class="flex-1 bg-white p-6 rounded-[2rem] border border-slate-100 card-shadow flex flex-col items-center text-center space-y-3 active:scale-95 transition-all cursor-pointer">
+                        <input type="file" accept="image/*" class="hidden" onchange="prosesGambar(this)">
+                        <div class="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
+                        </div>
+                        <span class="font-bold text-sm text-slate-700">Galeri</span>
+                    </label>
+
+                    <button onclick="items=[]; renderStep2(); keStep(2);" class="flex-1 bg-white p-6 rounded-[2rem] border border-slate-100 card-shadow flex flex-col items-center text-center space-y-3 active:scale-95 transition-all">
+                        <div class="w-12 h-12 bg-slate-50 text-slate-400 rounded-2xl flex items-center justify-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                        </div>
+                        <span class="font-bold text-sm text-slate-700">Manual</span>
+                    </button>
+                </div>
             </div>
         </div>
 
-        <!-- STEP 2: KONFIRMASI ITEM -->
-        <div id="step-2" class="hidden animate-up space-y-6">
-            <h2 class="text-xl font-bold px-2">Cek Item & Pajak</h2>
-            <div class="bg-white rounded-[2rem] shadow-sm border border-slate-100 overflow-hidden">
-                <div id="list-item-container" class="divide-y divide-slate-50"></div>
-                <div class="p-5 bg-slate-50 border-t flex items-center justify-between">
-                    <span class="text-sm font-bold text-slate-500">Total Pajak (PPN/Svc)</span>
-                    <div class="flex items-center gap-2">
-                        <span class="text-xs font-bold text-slate-400">Rp</span>
-                        <input type="number" id="input-pajak" class="w-24 text-right font-bold text-indigo-600 bg-white border rounded-xl px-3 py-2 outline-none shadow-sm" value="0">
+        <!-- STEP 2: REVIEW ITEM -->
+        <div id="step-2" class="hidden step-transition space-y-6">
+            <div class="flex justify-between items-end px-2">
+                <div>
+                    <h2 class="text-2xl font-extrabold text-slate-900">Review Bill</h2>
+                    <p class="text-xs text-slate-400 font-bold uppercase tracking-wider">Langkah 1 dari 3</p>
+                </div>
+                <button onclick="tambahItemKosong()" class="text-[10px] font-black bg-indigo-600 text-white px-3 py-2 rounded-xl shadow-lg shadow-indigo-100">+ ITEM</button>
+            </div>
+
+            <div class="space-y-4" id="list-item-container">
+                <!-- Items list -->
+            </div>
+
+            <div class="bg-indigo-900 rounded-[2rem] p-6 text-white card-shadow">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"/><path d="M12 18V6"/></svg>
+                        </div>
+                        <span class="font-bold text-sm">Pajak / PPN</span>
+                    </div>
+                    <div class="text-right">
+                        <span class="text-[10px] font-bold opacity-60 uppercase block">Total Pajak</span>
+                        <input type="number" id="input-pajak" class="w-24 bg-transparent text-right font-black text-lg outline-none border-b border-white/20" value="0">
                     </div>
                 </div>
             </div>
-            <button onclick="keStep(3)" class="w-full bg-indigo-600 text-white py-4 rounded-[1.5rem] font-bold shadow-xl active:scale-95 transition-all">Lanjut Pilih Orang →</button>
+
+            <button onclick="keStep(3)" class="btn-primary w-full text-white py-5 rounded-[1.8rem] font-extrabold text-lg transition-all active:scale-95 flex items-center justify-center gap-2">
+                Pilih Orang <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+            </button>
         </div>
 
-        <!-- STEP 3: PEMBAGIAN -->
-        <div id="step-3" class="hidden animate-up space-y-6">
-            <h2 class="text-xl font-bold px-2">Siapa makan apa?</h2>
-            <div class="flex gap-2">
-                <input type="text" id="input-nama" placeholder="Ketik nama teman..." class="flex-1 bg-white border-2 border-slate-100 rounded-2xl px-5 py-4 outline-none font-medium focus:border-indigo-600">
-                <button onclick="tambahOrang()" class="bg-indigo-600 text-white w-14 rounded-2xl flex items-center justify-center font-bold text-xl active:scale-90 transition-all shadow-md">+</button>
+        <!-- STEP 3: ASSIGNMENT -->
+        <div id="step-3" class="hidden step-transition space-y-6">
+            <div class="flex justify-between items-end px-2">
+                <div>
+                    <h2 class="text-2xl font-extrabold text-slate-900">Siapa Makan?</h2>
+                    <p class="text-xs text-slate-400 font-bold uppercase tracking-wider">Langkah 2 dari 3</p>
+                </div>
             </div>
-            <div id="list-nama-orang" class="flex flex-wrap gap-2"></div>
-            <div id="list-pembagian-container" class="space-y-4"></div>
-            <button onclick="keStep(4)" class="w-full bg-indigo-600 text-white py-4 rounded-[1.5rem] font-bold shadow-xl active:scale-95 transition-all">Lihat Ringkasan →</button>
+
+            <div class="relative">
+                <input type="text" id="input-nama" placeholder="Masukkan nama teman..." class="w-full bg-white border border-slate-100 rounded-[1.5rem] px-6 py-5 shadow-sm font-bold text-slate-800 placeholder:text-slate-300 focus:border-indigo-600 transition-all">
+                <button onclick="tambahOrang()" class="absolute right-3 top-3 w-10 h-10 btn-primary text-white rounded-xl flex items-center justify-center font-bold shadow-lg">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+                </button>
+            </div>
+
+            <div id="list-nama-orang" class="flex flex-wrap gap-2 px-1"></div>
+
+            <div id="list-pembagian-container" class="space-y-4 pt-2">
+                <!-- Assignments list -->
+            </div>
+
+            <div class="fixed bottom-0 left-0 right-0 p-6 glass border-t border-slate-100 z-50">
+                <button onclick="keStep(4)" class="btn-primary w-full max-w-md mx-auto text-white py-5 rounded-[1.8rem] font-extrabold text-lg transition-all active:scale-95 flex items-center justify-center gap-2">
+                    Hitung Tagihan <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+                </button>
+            </div>
         </div>
 
-        <!-- STEP 4: RINGKASAN -->
-        <div id="step-4" class="hidden animate-up space-y-6">
-            <div class="bg-indigo-600 rounded-[2.5rem] p-8 text-white shadow-2xl relative overflow-hidden text-center">
-                <p class="text-indigo-200 text-[10px] font-bold uppercase tracking-widest">Total Keseluruhan</p>
-                <h3 id="display-total-akhir" class="text-4xl font-black mt-1">Rp 0</h3>
+        <!-- STEP 4: SUMMARY -->
+        <div id="step-4" class="hidden step-transition space-y-6">
+            <div class="bg-indigo-600 btn-primary rounded-[2.5rem] p-8 text-white text-center relative overflow-hidden">
+                <div class="relative z-10">
+                    <p class="text-[10px] font-black uppercase tracking-[0.2em] opacity-80 mb-1">Total Keseluruhan</p>
+                    <h3 id="display-total-akhir" class="text-4xl font-black">Rp 0</h3>
+                </div>
+                <div class="absolute -right-6 -bottom-6 w-32 h-32 bg-white/10 rounded-full blur-2xl"></div>
             </div>
-            <div id="summary-container" class="space-y-4"></div>
-            <button onclick="unduhPDF()" class="w-full bg-emerald-600 text-white py-4 rounded-[1.5rem] font-bold shadow-xl flex items-center justify-center gap-2 active:scale-95 transition-all">Unduh PDF</button>
+
+            <div id="summary-container" class="space-y-4">
+                <!-- Summary cards -->
+            </div>
+
+            <div class="grid grid-cols-2 gap-4 pt-4">
+                <button onclick="unduhPDF()" class="bg-white border border-slate-100 p-5 rounded-[1.8rem] font-extrabold text-slate-800 card-shadow active:scale-95 transition-all flex flex-col items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+                    <span class="text-xs">SIMPAN PDF</span>
+                </button>
+                <button onclick="location.reload()" class="bg-indigo-50 p-5 rounded-[1.8rem] font-extrabold text-indigo-600 active:scale-95 transition-all flex flex-col items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+                    <span class="text-xs">MULAI BARU</span>
+                </button>
+            </div>
         </div>
 
     </main>
 
     <!-- LOADING SCREEN -->
-    <div id="loader" class="hidden fixed inset-0 bg-white/95 z-50 flex flex-col items-center justify-center p-10 text-center">
-        <div class="w-12 h-12 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin mb-4"></div>
-        <h3 class="text-lg font-bold">Gauri sedang membaca...</h3>
-        <p class="text-slate-400 text-sm">Harap tunggu sekitar 5-10 detik.</p>
+    <div id="loader" class="hidden fixed inset-0 glass z-[60] flex flex-col items-center justify-center p-10 text-center">
+        <div class="relative">
+            <div class="w-20 h-20 border-4 border-slate-100 rounded-3xl animate-spin shadow-xl"></div>
+            <div class="w-10 h-10 btn-primary absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-xl flex items-center justify-center text-white">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="animate-pulse"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            </div>
+        </div>
+        <h3 class="text-2xl font-extrabold text-slate-800 mt-8 tracking-tight">Gauri Sedang Membaca...</h3>
+        <p class="text-slate-400 text-sm mt-2 font-medium">Beri waktu sebentar buat AI kita berpikir cerdas.</p>
     </div>
 
     <script>
-        // --- API CONFIG ---
         const apiKey = "AIzaSyBUCxSsZau7u16hxl_0_3DpN3-y0Gf24I0"; 
-
-        // --- GLOBAL STATE ---
         let items = []; let people = []; let assignments = {}; let pajak = 0;
 
-        async function panggilGemini(base64, retry = 0) {
-            const prompt = `Analisis struk makanan ini. Berikan respon HANYA dalam format JSON: { "items": [{"id":"unique1", "name":"Nama Menu", "price": 10000, "qty": 1}], "totalTax": 2000 }. Jika satu menu dibeli lebih dari satu, tulis jumlah qty-nya dengan benar.`;
+        function extractJSON(text) {
             try {
-                const resp = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        contents: [{ parts: [{ text: prompt }, { inlineData: { mimeType: "image/png", data: base64 } }] }],
-                        generationConfig: { responseMimeType: "application/json" }
-                    })
-                });
-                if (!resp.ok) throw new Error("API Gagal");
-                const data = await resp.json();
-                return JSON.parse(data.candidates[0].content.parts[0].text);
-            } catch (err) {
-                if (retry < 2) {
-                    await new Promise(r => setTimeout(r, 1500));
-                    return panggilGemini(base64, retry + 1);
-                }
-                throw err;
-            }
+                const match = text.match(/\{[\s\S]*\}/);
+                return match ? JSON.parse(match[0]) : JSON.parse(text);
+            } catch (e) { return null; }
+        }
+
+        async function panggilGemini(base64) {
+            const prompt = `Extraksi data struk ke JSON: { "items": [{"id":"1", "name":"Menu Name", "price": 10000, "qty": 1}], "totalTax": 2000 }. Balas HANYA JSON.`;
+            const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ contents: [{ parts: [{ text: prompt }, { inlineData: { mimeType: "image/png", data: base64 } }] }] })
+            });
+            const data = await response.json();
+            return extractJSON(data.candidates[0].content.parts[0].text);
         }
 
         async function prosesGambar(input) {
@@ -154,59 +238,77 @@
                 const base64 = e.target.result.split(',')[1];
                 try {
                     const res = await panggilGemini(base64);
-                    items = res.items || [];
-                    pajak = res.totalTax || 0;
-                    renderStep2(); keStep(2);
-                } catch (err) {
-                    alert("Gauri gagal membaca. Pastikan foto struk terlihat jelas, tidak blur, dan terang ya!");
-                } finally { document.getElementById('loader').classList.add('hidden'); }
+                    if (res && res.items) {
+                        items = res.items; pajak = res.totalTax || 0;
+                        renderStep2(); keStep(2);
+                    } else throw new Error();
+                } catch (err) { alert("Waduh, Gauri kesulitan baca struk ini. Coba foto lebih jelas atau input manual ya!"); }
+                finally { document.getElementById('loader').classList.add('hidden'); }
             };
             reader.readAsDataURL(file);
+        }
+
+        function keStep(n) {
+            [1, 2, 3, 4].forEach(s => {
+                const el = document.getElementById(`step-${s}`);
+                el.classList.add('hidden');
+            });
+            document.getElementById(`step-${n}`).classList.remove('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            if (n === 3) renderAssign();
+            if (n === 4) renderSummary();
+        }
+
+        function tambahItemKosong() {
+            items.push({ id: Date.now().toString(), name: "Menu Baru", price: 0, qty: 1 });
+            renderStep2();
         }
 
         function renderStep2() {
             const cont = document.getElementById('list-item-container');
             cont.innerHTML = items.map((it, i) => `
-                <div class="p-5 flex justify-between items-center gap-3">
-                    <div class="flex-1">
-                        <input type="text" value="${it.name}" onchange="items[${i}].name=this.value" class="font-bold text-sm w-full bg-transparent outline-none focus:text-indigo-600">
-                        <div class="flex items-center gap-2 mt-1">
-                            <span class="text-[10px] font-bold text-slate-300">QTY</span>
-                            <input type="number" value="${it.qty}" onchange="items[${i}].qty=parseInt(this.value)" class="w-10 text-xs bg-slate-100 rounded px-1 font-bold text-center">
-                            <span class="text-[10px] font-bold text-slate-300 uppercase">@ Rp ${it.price.toLocaleString()}</span>
+                <div class="bg-white rounded-[2rem] p-5 card-shadow border border-slate-50 flex flex-col gap-4 step-transition">
+                    <div class="flex justify-between items-start gap-4">
+                        <div class="flex-1">
+                            <input type="text" value="${it.name}" onchange="items[${i}].name=this.value" class="font-extrabold text-slate-800 text-lg w-full bg-transparent focus:text-indigo-600 transition-colors">
+                            <div class="flex items-center gap-3 mt-2">
+                                <div class="flex items-center bg-slate-50 rounded-xl px-3 py-2 gap-2">
+                                    <span class="text-[10px] font-black text-slate-400">QTY</span>
+                                    <input type="number" value="${it.qty}" onchange="items[${i}].qty=parseInt(this.value); renderStep2();" class="w-8 text-center bg-transparent font-bold text-slate-700">
+                                </div>
+                                <div class="flex items-center bg-slate-50 rounded-xl px-3 py-2 gap-2">
+                                    <span class="text-[10px] font-black text-slate-400">HARGA @</span>
+                                    <input type="number" value="${it.price}" onchange="items[${i}].price=parseInt(this.value); renderStep2();" class="w-20 bg-transparent font-bold text-slate-700">
+                                </div>
+                            </div>
                         </div>
+                        <button onclick="items.splice(${i},1); renderStep2();" class="w-10 h-10 rounded-full flex items-center justify-center text-red-200 hover:text-red-500 transition-colors">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18m-2 0v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6m3 0V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+                        </button>
                     </div>
-                    <div class="text-right">
-                        <p class="font-bold text-sm">Rp ${(it.price * it.qty).toLocaleString()}</p>
-                        <button onclick="items.splice(${i},1); renderStep2();" class="text-[10px] text-red-400 font-bold uppercase mt-1">Hapus</button>
+                    <div class="flex justify-between items-center pt-3 border-t border-slate-50">
+                        <span class="text-xs font-bold text-slate-300">TOTAL MENU</span>
+                        <span class="font-black text-indigo-600">Rp ${(it.price * it.qty).toLocaleString()}</span>
                     </div>
                 </div>
             `).join('');
             document.getElementById('input-pajak').value = pajak;
         }
 
-        function keStep(n) {
-            [1, 2, 3, 4].forEach(s => document.getElementById(`step-${s}`).classList.add('hidden'));
-            document.getElementById(`step-${n}`).classList.remove('hidden');
-            window.scrollTo(0,0);
-            if (n === 3) renderAssign();
-            if (n === 4) renderSummary();
-        }
-
         function tambahOrang() {
             const inp = document.getElementById('input-nama');
             if (inp.value.trim()) {
                 people.push({ id: Date.now().toString(), name: inp.value.trim() });
-                inp.value = ''; renderNamaOrang(); renderAssign();
+                inp.value = ''; renderNames(); renderAssign();
             }
         }
 
-        function renderNamaOrang() {
+        function renderNames() {
             const cont = document.getElementById('list-nama-orang');
             cont.innerHTML = people.map(p => `
-                <div class="bg-white border-2 border-slate-100 px-4 py-2 rounded-full text-xs font-bold flex items-center gap-2 shadow-sm animate-up">
-                    ${p.name}
-                    <button onclick="people=people.filter(x=>x.id!=='${p.id}'); renderNamaOrang(); renderAssign();" class="text-red-300 font-bold ml-1">×</button>
+                <div class="bg-white border border-slate-100 pl-4 pr-2 py-2 rounded-2xl text-xs font-black flex items-center gap-3 card-shadow animate-up">
+                    <span class="text-slate-800 uppercase tracking-tight">${p.name}</span>
+                    <button onclick="people=people.filter(x=>x.id!=='${p.id}'); renderNames(); renderAssign();" class="w-6 h-6 bg-slate-50 rounded-lg flex items-center justify-center text-slate-300 hover:text-red-500 transition-all">×</button>
                 </div>
             `).join('');
         }
@@ -221,25 +323,27 @@
         function renderAssign() {
             const cont = document.getElementById('list-pembagian-container');
             if (people.length === 0) { 
-                cont.innerHTML = `<div class="py-10 text-center"><p class="text-slate-400 text-sm italic">Tambah nama teman-temanmu dulu ya!</p></div>`; 
-                return; 
+                cont.innerHTML = `<div class="py-16 text-center"><p class="text-slate-300 font-bold italic">Masukkan nama teman kamu di atas dulu!</p></div>`; return; 
             }
             cont.innerHTML = items.map(it => `
-                <div class="bg-white rounded-3xl border border-slate-100 p-5 shadow-sm space-y-4">
-                    <div class="flex justify-between border-b pb-3">
-                        <span class="font-bold text-sm text-slate-800">${it.name} <span class="text-slate-300 text-xs ml-1">(Qty: ${it.qty})</span></span>
-                        <span class="text-indigo-600 font-bold text-sm bg-indigo-50 px-2 rounded-lg">Rp ${it.price.toLocaleString()}</span>
+                <div class="bg-white rounded-[2rem] p-6 shadow-sm border border-slate-50 space-y-4">
+                    <div class="flex justify-between items-start border-b border-slate-50 pb-4">
+                        <div class="space-y-1">
+                            <span class="font-extrabold text-slate-800 block">${it.name}</span>
+                            <span class="text-[10px] font-black text-indigo-500 uppercase tracking-widest bg-indigo-50 px-2 py-0.5 rounded-lg">Rp ${it.price.toLocaleString()}</span>
+                        </div>
+                        <span class="text-[10px] font-black text-slate-300 uppercase">Qty: ${it.qty}</span>
                     </div>
                     <div class="space-y-2">
                         ${people.map(p => {
                             const q = assignments[it.id]?.[p.id] || 0;
                             return `
-                                <div class="flex justify-between items-center p-3 rounded-2xl ${q > 0 ? 'bg-indigo-50 text-indigo-700 border-indigo-100' : 'bg-slate-50 text-slate-400 border-transparent'} border transition-all">
-                                    <span class="text-xs font-bold">${p.name}</span>
+                                <div class="flex justify-between items-center p-3 rounded-[1.2rem] ${q > 0 ? 'bg-indigo-600 text-white shadow-lg' : 'bg-slate-50 text-slate-400'} transition-all duration-300">
+                                    <span class="text-sm font-bold ml-2">${p.name}</span>
                                     <div class="flex items-center gap-4">
-                                        <button onclick="updateQty('${it.id}', '${p.id}', -1)" class="w-8 h-8 bg-white rounded-xl shadow-sm flex items-center justify-center font-bold">-</button>
+                                        <button onclick="updateQty('${it.id}', '${p.id}', -1)" class="w-9 h-9 ${q > 0 ? 'bg-white/20' : 'bg-white'} rounded-xl flex items-center justify-center font-bold shadow-sm">-</button>
                                         <span class="text-sm font-black w-4 text-center">${q}</span>
-                                        <button onclick="updateQty('${it.id}', '${p.id}', 1)" class="w-8 h-8 bg-white rounded-xl shadow-sm flex items-center justify-center font-bold">+</button>
+                                        <button onclick="updateQty('${it.id}', '${p.id}', 1)" class="w-9 h-9 ${q > 0 ? 'bg-white/20' : 'bg-white'} rounded-xl flex items-center justify-center font-bold shadow-sm">+</button>
                                     </div>
                                 </div>`;
                         }).join('')}
@@ -248,7 +352,7 @@
             `).join('');
         }
 
-        function hitungSemua() {
+        function hitung() {
             const pjk = parseInt(document.getElementById('input-pajak').value) || 0;
             const sub = items.reduce((a, b) => a + (b.price * b.qty), 0);
             const totals = people.map(p => {
@@ -261,25 +365,29 @@
         }
 
         function renderSummary() {
-            const data = hitungSemua();
+            const data = hitung();
             document.getElementById('display-total-akhir').innerText = `Rp ${data.grand.toLocaleString()}`;
             document.getElementById('summary-container').innerHTML = data.totals.map(p => `
-                <div class="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm animate-up">
-                    <div class="flex justify-between items-center border-b pb-4 mb-4">
-                        <span class="font-extrabold text-xl">${p.name}</span>
+                <div class="bg-white rounded-[2rem] p-8 border border-slate-50 card-shadow step-transition relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-24 h-24 bg-indigo-50 rounded-bl-[4rem] -mr-8 -mt-8"></div>
+                    <div class="flex justify-between items-start relative z-10">
+                        <div class="space-y-1">
+                            <h4 class="text-2xl font-black text-slate-800">${p.name}</h4>
+                            <p class="text-[10px] font-black text-indigo-500 uppercase tracking-[0.2em]">Rincian Tagihan</p>
+                        </div>
                         <div class="text-right">
-                            <span class="text-[9px] font-black text-indigo-300 uppercase block tracking-widest">Wajib Bayar</span>
-                            <span class="font-black text-indigo-600 text-xl">Rp ${Math.round(p.total).toLocaleString()}</span>
+                            <span class="text-[9px] font-black text-slate-400 uppercase tracking-widest block mb-1">TOTAL BAYAR</span>
+                            <span class="font-black text-2xl text-indigo-600">Rp ${Math.round(p.total).toLocaleString()}</span>
                         </div>
                     </div>
-                    <div class="space-y-1.5">
+                    <div class="mt-8 space-y-3">
                         ${items.filter(it => (assignments[it.id]?.[p.id] || 0) > 0).map(it => `
-                            <div class="flex justify-between text-xs text-slate-500 font-medium italic">
-                                <span>${it.name} (x${assignments[it.id][p.id]})</span>
-                                <span>Rp ${(it.price * assignments[it.id][p.id]).toLocaleString()}</span>
+                            <div class="flex justify-between items-center text-xs text-slate-500">
+                                <span class="font-bold italic">${it.name} <span class="text-slate-300 ml-1">x${assignments[it.id][p.id]}</span></span>
+                                <span class="font-black text-slate-800">Rp ${(it.price * assignments[it.id][p.id]).toLocaleString()}</span>
                             </div>
                         `).join('')}
-                        <div class="flex justify-between text-[10px] font-bold text-slate-300 pt-2 border-t border-dashed mt-2">
+                        <div class="flex justify-between items-center pt-3 border-t border-slate-50 text-[10px] font-bold text-slate-400 uppercase">
                             <span>Bagian Pajak</span>
                             <span>+ Rp ${Math.round(p.pjk).toLocaleString()}</span>
                         </div>
@@ -288,20 +396,20 @@
         }
 
         function unduhPDF() {
-            const { jsPDF } = window.jspdf; const doc = new jsPDF(); const data = hitungSemua();
-            doc.setFont("helvetica", "bold"); doc.setFontSize(22); doc.text("Gauri Split Bill", 14, 20);
-            doc.setFont("helvetica", "normal"); doc.setFontSize(10);
-            doc.text(`Dicetak pada: ${new Date().toLocaleString('id-ID')}`, 14, 28);
-            doc.text(`Total Keseluruhan: Rp ${data.grand.toLocaleString()}`, 14, 33);
-            let y = 45;
+            const { jsPDF } = window.jspdf; const doc = new jsPDF(); const data = hitung();
+            doc.setFont("helvetica", "bold"); doc.setFontSize(24); doc.text("GAURI SPLIT BILL", 14, 25);
+            doc.setFontSize(10); doc.setTextColor(150); doc.text(`Laporan dibuat pada: ${new Date().toLocaleString('id-ID')}`, 14, 32);
+            doc.setFontSize(12); doc.setTextColor(0); doc.text(`TOTAL TAGIHAN: Rp ${data.grand.toLocaleString()}`, 14, 42);
+            
+            let y = 55;
             data.totals.forEach(p => {
-                if (y > 250) { doc.addPage(); y = 20; }
-                doc.setFontSize(14); doc.setTextColor(79, 70, 229); doc.text(`Bill: ${p.name}`, 14, y);
+                if (y > 240) { doc.addPage(); y = 20; }
+                doc.setFontSize(16); doc.setTextColor(79, 70, 229); doc.text(p.name, 14, y);
                 const baris = items.filter(it => (assignments[it.id]?.[p.id] || 0) > 0).map(it => [it.name, assignments[it.id][p.id], `Rp ${it.price.toLocaleString()}`, `Rp ${(it.price * assignments[it.id][p.id]).toLocaleString()}`]);
-                doc.autoTable({ startY: y + 3, head: [['Menu', 'Qty', 'Harga', 'Subtotal']], body: [...baris, [{ content: 'TOTAL AKHIR', colSpan: 3, styles: { halign: 'right', fontStyle: 'bold' } }, `Rp ${Math.round(p.total).toLocaleString()}`]], theme: 'striped', headStyles: { fillColor: [79, 70, 229] } });
+                doc.autoTable({ startY: y + 3, head: [['Item', 'Qty', 'Harga', 'Subtotal']], body: [...baris, [{ content: 'TOTAL AKHIR', colSpan: 3, styles: { halign: 'right', fontStyle: 'bold' } }, `Rp ${Math.round(p.total).toLocaleString()}`]], theme: 'striped', headStyles: { fillColor: [79, 70, 229] } });
                 y = doc.lastAutoTable.finalY + 15;
             });
-            doc.save("Gauri_Tagihan.pdf");
+            doc.save(`Gauri_Bill_${Date.now()}.pdf`);
         }
     </script>
 </body>
