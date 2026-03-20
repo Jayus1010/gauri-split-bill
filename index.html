@@ -1,1 +1,316 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Gauri Split Bill - AI Scanner</title>
+    <!-- Library CSS & JS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            -webkit-tap-highlight-color: transparent; 
+        }
+        .animate-up { animation: slideUp 0.4s ease-out; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        /* Hilangkan spinner input number */
+        input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-900 min-h-screen">
+
+    <!-- NAVBAR -->
+    <nav class="bg-white/90 backdrop-blur-md border-b sticky top-0 z-40 px-5 py-4 flex items-center justify-between shadow-sm">
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 bg-indigo-600 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-indigo-100">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1-2-1Z"/><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"/><path d="M12 17.5v-11"/></svg>
+            </div>
+            <div>
+                <h1 class="font-extrabold text-lg leading-tight tracking-tight">Gauri</h1>
+                <p class="text-[10px] text-indigo-500 font-extrabold uppercase tracking-widest">Split Bill AI</p>
+            </div>
+        </div>
+        <button onclick="location.reload()" class="p-2 text-slate-400">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+        </button>
+    </nav>
+
+    <main class="max-w-md mx-auto p-5 pb-24">
+        
+        <!-- STEP 1: AWAL -->
+        <div id="step-1" class="animate-up space-y-6">
+            <div class="bg-indigo-600 rounded-[2.5rem] p-8 text-white shadow-2xl relative overflow-hidden">
+                <div class="relative z-10">
+                    <h2 class="text-2xl font-extrabold leading-tight">Halo! Siap bagi tagihan?</h2>
+                    <p class="text-indigo-100 text-sm mt-2">Foto struknya, biar Gauri yang hitung.</p>
+                </div>
+                <div class="absolute -right-10 -bottom-10 w-40 h-40 bg-white/10 rounded-full blur-3xl"></div>
+            </div>
+
+            <div class="grid grid-cols-1 gap-4">
+                <label class="bg-white p-6 rounded-[2rem] border-2 border-slate-100 shadow-sm flex flex-col items-center text-center space-y-3 active:scale-95 transition-all cursor-pointer">
+                    <input type="file" accept="image/*" capture="environment" class="hidden" onchange="prosesGambar(this)">
+                    <div class="w-16 h-16 bg-indigo-50 text-indigo-600 rounded-full flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg>
+                    </div>
+                    <span class="font-bold text-slate-700">Ambil Foto Kamera</span>
+                </label>
+
+                <label class="bg-white p-6 rounded-[2rem] border-2 border-slate-100 shadow-sm flex flex-col items-center text-center space-y-3 active:scale-95 transition-all cursor-pointer">
+                    <input type="file" accept="image/*" class="hidden" onchange="prosesGambar(this)">
+                    <div class="w-16 h-16 bg-emerald-50 text-emerald-600 rounded-full flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
+                    </div>
+                    <span class="font-bold text-slate-700">Pilih dari Galeri</span>
+                </label>
+            </div>
+        </div>
+
+        <!-- STEP 2: REVIEW ITEM -->
+        <div id="step-2" class="hidden animate-up space-y-6">
+            <h2 class="text-xl font-bold px-2">Cek Item & Pajak</h2>
+            <div class="bg-white rounded-[2rem] shadow-sm border border-slate-100 overflow-hidden">
+                <div id="list-item-container" class="divide-y divide-slate-50"></div>
+                <div class="p-5 bg-slate-50 border-t flex items-center justify-between">
+                    <span class="text-sm font-bold text-slate-500">Total Pajak (PPN)</span>
+                    <div class="flex items-center gap-2">
+                        <span class="text-xs font-bold text-slate-400">Rp</span>
+                        <input type="number" id="input-pajak" class="w-24 text-right font-bold text-indigo-600 bg-white border rounded-xl px-3 py-2 outline-none" value="0">
+                    </div>
+                </div>
+            </div>
+            <button onclick="keStep(3)" class="w-full bg-indigo-600 text-white py-4 rounded-[1.5rem] font-bold shadow-xl active:scale-95 transition-all">
+                Lanjut Pilih Orang →
+            </button>
+        </div>
+
+        <!-- STEP 3: ASSIGN ORANG -->
+        <div id="step-3" class="hidden animate-up space-y-6">
+            <h2 class="text-xl font-bold px-2">Siapa makan apa?</h2>
+            <div class="flex gap-2">
+                <input type="text" id="input-nama" placeholder="Ketik nama teman..." class="flex-1 bg-white border-2 border-slate-100 rounded-2xl px-5 py-4 outline-none font-medium">
+                <button onclick="tambahOrang()" class="bg-indigo-600 text-white w-14 rounded-2xl flex items-center justify-center active:scale-90 transition-all font-bold">+</button>
+            </div>
+            <div id="list-nama-orang" class="flex flex-wrap gap-2"></div>
+            <div id="list-pembagian-container" class="space-y-4"></div>
+            <button onclick="keStep(4)" class="w-full bg-indigo-600 text-white py-4 rounded-[1.5rem] font-bold shadow-xl active:scale-95 transition-all">
+                Lihat Ringkasan →
+            </button>
+        </div>
+
+        <!-- STEP 4: RINGKASAN -->
+        <div id="step-4" class="hidden animate-up space-y-6">
+            <div class="bg-indigo-600 rounded-[2.5rem] p-8 text-white shadow-2xl relative overflow-hidden">
+                <p class="text-indigo-200 text-xs font-bold uppercase">Total Tagihan</p>
+                <h3 id="display-total-akhir" class="text-4xl font-black mt-1">Rp 0</h3>
+            </div>
+            <div id="summary-container" class="space-y-4"></div>
+            <button onclick="unduhPDF()" class="w-full bg-emerald-600 text-white py-4 rounded-[1.5rem] font-bold shadow-xl flex items-center justify-center gap-2 active:scale-95 transition-all">
+                Unduh PDF
+            </button>
+        </div>
+
+    </main>
+
+    <!-- LOADING SCREEN -->
+    <div id="loader" class="hidden fixed inset-0 bg-white/95 z-50 flex flex-col items-center justify-center p-10 text-center">
+        <div class="w-12 h-12 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin mb-4"></div>
+        <h3 class="text-lg font-bold">Gauri sedang membaca...</h3>
+        <p class="text-slate-400 text-sm">Tunggu sebentar ya!</p>
+    </div>
+
+    <script>
+        // --- API KEY KAMU ---
+        const apiKey = "AIzaSyDQFYqwI9sibuqFKG006qp4gb9bGQM6f8Q"; 
+
+        // --- STATE ---
+        let items = [];
+        let people = [];
+        let assignments = {}; 
+        let pajak = 0;
+
+        async function prosesGambar(input) {
+            const file = input.files[0];
+            if (!file) return;
+
+            document.getElementById('loader').classList.remove('hidden');
+
+            const reader = new FileReader();
+            reader.onload = async (e) => {
+                const base64 = e.target.result.split(',')[1];
+                try {
+                    const resp = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            contents: [{
+                                parts: [
+                                    { text: "Extract receipt items into JSON: { \"items\": [{\"id\":\"1\", \"name\":\"Nama Menu\", \"price\": 10000, \"qty\": 1}], \"totalTax\": 2000 }. Make sure qty and price are correct." },
+                                    { inlineData: { mimeType: "image/png", data: base64 } }
+                                ]
+                            }],
+                            generationConfig: { responseMimeType: "application/json" }
+                        })
+                    });
+
+                    const data = await resp.json();
+                    const res = JSON.parse(data.candidates[0].content.parts[0].text);
+                    items = res.items;
+                    pajak = res.totalTax || 0;
+                    renderStep2();
+                    keStep(2);
+                } catch (err) {
+                    alert("Maaf, Gauri gagal membaca struk. Coba foto yang lebih jelas ya!");
+                } finally {
+                    document.getElementById('loader').classList.add('hidden');
+                }
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function renderStep2() {
+            const cont = document.getElementById('list-item-container');
+            cont.innerHTML = items.map((it, i) => `
+                <div class="p-5 flex justify-between items-center gap-3">
+                    <div class="flex-1">
+                        <input type="text" value="${it.name}" onchange="items[${i}].name=this.value" class="font-bold text-sm w-full bg-transparent outline-none">
+                        <div class="flex items-center gap-2 mt-1">
+                            <span class="text-[10px] font-bold text-slate-300">QTY</span>
+                            <input type="number" value="${it.qty}" onchange="items[${i}].qty=parseInt(this.value)" class="w-10 text-xs bg-slate-100 rounded px-1 font-bold">
+                            <span class="text-[10px] font-bold text-slate-300 uppercase">@ Rp ${it.price.toLocaleString()}</span>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <p class="font-bold text-sm">Rp ${(it.price * it.qty).toLocaleString()}</p>
+                        <button onclick="items.splice(${i},1); renderStep2();" class="text-[10px] text-red-400 font-bold uppercase">Hapus</button>
+                    </div>
+                </div>
+            `).join('');
+            document.getElementById('input-pajak').value = pajak;
+        }
+
+        function keStep(n) {
+            [1, 2, 3, 4].forEach(s => document.getElementById(`step-${s}`).classList.add('hidden'));
+            document.getElementById(`step-${n}`).classList.remove('hidden');
+            window.scrollTo(0,0);
+            if (n === 3) renderAssign();
+            if (n === 4) renderSummary();
+        }
+
+        function tambahOrang() {
+            const inp = document.getElementById('input-nama');
+            if (inp.value.trim()) {
+                people.push({ id: Date.now().toString(), name: inp.value.trim() });
+                inp.value = '';
+                renderNamaOrang();
+                renderAssign();
+            }
+        }
+
+        function renderNamaOrang() {
+            const cont = document.getElementById('list-nama-orang');
+            cont.innerHTML = people.map(p => `
+                <div class="bg-white border-2 border-slate-100 px-4 py-2 rounded-full text-xs font-bold flex items-center gap-2">
+                    ${p.name}
+                    <button onclick="people=people.filter(x=>x.id!=='${p.id}'); renderNamaOrang(); renderAssign();" class="text-red-300">×</button>
+                </div>
+            `).join('');
+        }
+
+        function updateQty(itId, pId, delta) {
+            if (!assignments[itId]) assignments[itId] = {};
+            const cur = assignments[itId][pId] || 0;
+            assignments[itId][pId] = Math.max(0, cur + delta);
+            renderAssign();
+        }
+
+        function renderAssign() {
+            const cont = document.getElementById('list-pembagian-container');
+            if (people.length === 0) {
+                cont.innerHTML = `<p class="text-center text-slate-400 text-sm italic py-10">Tambah nama teman dulu ya!</p>`;
+                return;
+            }
+            cont.innerHTML = items.map(it => `
+                <div class="bg-white rounded-3xl border border-slate-100 p-5 shadow-sm space-y-4">
+                    <div class="flex justify-between border-b pb-2">
+                        <span class="font-bold text-sm">${it.name} <span class="text-slate-300">(x${it.qty})</span></span>
+                        <span class="text-indigo-600 font-bold text-sm">Rp ${it.price.toLocaleString()}</span>
+                    </div>
+                    <div class="space-y-2">
+                        ${people.map(p => {
+                            const q = assignments[it.id]?.[p.id] || 0;
+                            return `
+                                <div class="flex justify-between items-center p-2 rounded-xl ${q > 0 ? 'bg-indigo-50 text-indigo-700' : 'bg-slate-50 text-slate-400'}">
+                                    <span class="text-xs font-bold">${p.name}</span>
+                                    <div class="flex items-center gap-3">
+                                        <button onclick="updateQty('${it.id}', '${p.id}', -1)" class="w-8 h-8 bg-white rounded-lg shadow-sm flex items-center justify-center font-bold">-</button>
+                                        <span class="text-sm font-black w-4 text-center">${q}</span>
+                                        <button onclick="updateQty('${it.id}', '${p.id}', 1)" class="w-8 h-8 bg-white rounded-lg shadow-sm flex items-center justify-center font-bold">+</button>
+                                    </div>
+                                </div>
+                            `;
+                        }).join('')}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function hitungSemua() {
+            const pjk = parseInt(document.getElementById('input-pajak').value) || 0;
+            const sub = items.reduce((a, b) => a + (b.price * b.qty), 0);
+            const totals = people.map(p => {
+                let pSub = 0;
+                items.forEach(it => {
+                    const q = assignments[it.id]?.[p.id] || 0;
+                    pSub += (it.price * q);
+                });
+                const pPjk = sub > 0 ? (pSub / sub) * pjk : 0;
+                return { ...p, sub: pSub, pjk: pPjk, total: pSub + pPjk };
+            });
+            return { sub, pjk, grand: sub + pjk, totals };
+        }
+
+        function renderSummary() {
+            const data = hitungSemua();
+            document.getElementById('display-total-akhir').innerText = `Rp ${data.grand.toLocaleString()}`;
+            document.getElementById('summary-container').innerHTML = data.totals.map(p => `
+                <div class="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm">
+                    <div class="flex justify-between items-center border-b pb-3 mb-3">
+                        <span class="font-bold text-lg">${p.name}</span>
+                        <span class="font-black text-indigo-600 text-lg">Rp ${Math.round(p.total).toLocaleString()}</span>
+                    </div>
+                    <div class="text-xs text-slate-400 space-y-1">
+                        <div class="flex justify-between"><span>Menu:</span><span>Rp ${p.sub.toLocaleString()}</span></div>
+                        <div class="flex justify-between"><span>Pajak:</span><span>+ Rp ${Math.round(p.pjk).toLocaleString()}</span></div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function unduhPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            const data = hitungSemua();
+
+            doc.setFontSize(22);
+            doc.text("Gauri Split Bill", 14, 20);
+            doc.setFontSize(10);
+            doc.text(`Total Tagihan: Rp ${data.grand.toLocaleString()}`, 14, 30);
+
+            let y = 40;
+            data.totals.forEach(p => {
+                doc.setFontSize(14);
+                doc.text(p.name, 14, y);
+                const baris = items.filter(it => (assignments[it.id]?.[p.id] || 0) > 0).map(it => [it.name, assignments[it.id][p.id], it.price.toLocaleString(), (it.price * assignments[it.id][p.id]).toLocaleString()]);
+                doc.autoTable({ startY: y + 2, head: [['Item', 'Qty', 'Harga', 'Total']], body: [...baris, ['Total + Pajak', '', '', Math.round(p.total).toLocaleString()]], theme: 'striped' });
+                y = doc.lastAutoTable.finalY + 15;
+            });
+            doc.save("Tagihan_Gauri.pdf");
+        }
+    </script>
+</body>
+</html>
 
